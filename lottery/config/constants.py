@@ -1,0 +1,2 @@
+MAX_QUOTES = 250
+TAX = 0.05
