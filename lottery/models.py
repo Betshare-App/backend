@@ -22,6 +22,7 @@ class Request(models.Model):
     quotes = models.IntegerField()
     price =  models.FloatField(null=True, blank=True)
     suggested_numbers = models.CharField(max_length=250)
+    created = models.DateField(auto_now_add=True)
     status = models.CharField(max_length=50, choices=RequestStatus.choices, default=RequestStatus.OPEN)
 
     def __str__(self):
