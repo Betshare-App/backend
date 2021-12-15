@@ -41,3 +41,13 @@ class CheckCreditals(APIView):
         except:
             email_isvalid = True
         return Response({'username_isvalid': username_isvalid, 'email_isvalid': email_isvalid})
+
+
+class GetBalance(APIView):
+    def get(self, request):
+        try:
+            user = User.objects.get(username=request['user'])
+            balance = user.balance
+            return Response(balance, status=status.HTTP_200_OK)
+        except:
+            return Response(status=status.HTTP_404_NOT_FOUND)

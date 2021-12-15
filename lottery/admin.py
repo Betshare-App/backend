@@ -27,7 +27,7 @@ class RequestAdmin(admin.ModelAdmin):
                     'suggested_numbers', 
                     'price', 
                     'status',
-                    'created')
+                    'created',)
     readonly_fields = ('price', )
 
     def save_model(self, request, obj, form, change):
