@@ -46,7 +46,8 @@ class CheckCreditals(APIView):
 class GetBalance(APIView):
     def get(self, request):
         try:
-            user = User.objects.get(username=request['user'])
+            print(request['user'])
+            user = User.objects.get(id=request.user.id)
             balance = user.balance
             return Response(balance, status=status.HTTP_200_OK)
         except:
