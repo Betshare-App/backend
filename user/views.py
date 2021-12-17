@@ -5,6 +5,8 @@ from rest_framework.decorators import parser_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from django.contrib.auth.models import User
+from .models import UserBalance
+
 # Create your views here.
 
 class Register(APIView):
@@ -46,9 +48,9 @@ class CheckCreditals(APIView):
 class GetBalance(APIView):
     def get(self, request):
         try:
-            print(request['user'])
             user = User.objects.get(id=request.user.id)
-            balance = user.balance
+            user_balance = UserBalance.objects.get(user = user)
+            balance = user_balance.balance
             return Response(balance, status=status.HTTP_200_OK)
         except:
             return Response(status=status.HTTP_404_NOT_FOUND)
