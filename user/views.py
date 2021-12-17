@@ -49,7 +49,7 @@ class GetBalance(APIView):
     def get(self, request):
         try:
             user = User.objects.get(id=request.user.id)
-            user_balance = UserBalance.objects.get(user = user)
+            user_balance = UserBalance.objects.get(user=user)
             balance = user_balance.balance
             return Response(balance, status=status.HTTP_200_OK)
         except:

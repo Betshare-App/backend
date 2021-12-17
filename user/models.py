@@ -34,4 +34,4 @@ class UserFinanceInfo(models.Model):
 
 class UserBalance(models.Model):
     user = models.OneToOneField(User, on_delete=CASCADE)
-    balance = models.FloatField(blank=True, null=True)
+    balance = models.FloatField(blank=True, null=True, default=0)
