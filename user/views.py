@@ -5,7 +5,7 @@ from rest_framework.decorators import parser_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from django.contrib.auth.models import User
-from .models import UserBalance
+from .models import UserBalance, UserContact, UserDocs
 
 # Create your views here.
 
@@ -44,7 +44,6 @@ class CheckCreditals(APIView):
             email_isvalid = True
         return Response({'username_isvalid': username_isvalid, 'email_isvalid': email_isvalid})
 
-
 class GetBalance(APIView):
     def get(self, request):
         try:
@@ -54,3 +53,28 @@ class GetBalance(APIView):
             return Response(balance, status=status.HTTP_200_OK)
         except:
             return Response(status=status.HTTP_404_NOT_FOUND)
+
+class RegisterPersonalInfo(APIView):
+    def post(self, request):
+        data = request.data
+        try:
+            user = User.objects.get(id=request.user.id)
+            user.first_name = data['first_name']
+            user.last_name = data['last_name']
+            date = data['date_of_birth'].split('/')
+            date = date[2]+'-'+date[1]+'-'+date[0]
+            docs = UserDocs.objects.create(
+                user=user, 
+                RG=data['rg'], 
+                date_of_birth=date,
+                CPF=data['cpf'])
+            
+            contact = UserContact.objects.create(
+                user=user, 
+                phone=data['phone'])
+            user.save()
+            contact.save()
+            docs.save()
+            return Response(status=status.HTTP_200_OK)
+        except:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
