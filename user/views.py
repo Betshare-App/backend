@@ -61,12 +61,10 @@ class RegisterPersonalInfo(APIView):
             user = User.objects.get(id=request.user.id)
             user.first_name = data['first_name']
             user.last_name = data['last_name']
-            date = data['date_of_birth'].split('/')
-            date = date[2]+'-'+date[1]+'-'+date[0]
             docs = UserDocs.objects.create(
                 user=user, 
                 RG=data['rg'], 
-                date_of_birth=date,
+                date_of_birth=data['date_of_birth'],
                 CPF=data['cpf'])
             
             contact = UserContact.objects.create(
