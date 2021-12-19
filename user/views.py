@@ -55,6 +55,29 @@ class GetBalance(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
 class RegisterPersonalInfo(APIView):
+
+    def get(self, request):
+        data = request.data
+        try:
+            user = User.objects.get(id = request.user.id)
+            first_name = user.first_name
+            last_name = user.last_name
+            docs = UserDocs.objects.get(user = user)
+            rg = docs.RG
+            cpf = docs.CPF
+            date_of_birth = docs.date_of_birth
+            contact = UserContact.objects.get(user = user)
+            phone = contact.phone
+            form = {"first_name": first_name,
+                    "last_name": last_name,
+                    "rg": rg,
+                    "cpf": cpf,
+                    "date_of_birth": date_of_birth,
+                    "phone": phone}
+            return Response(form, status=status.HTTP_200_OK)
+        except:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
     def post(self, request):
         data = request.data
         try:
