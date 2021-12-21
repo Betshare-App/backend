@@ -118,3 +118,18 @@ class RegisterAddressInfo(APIView):
             return Response(status=status.HTTP_200_OK)
         except:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    def get(self, request):
+        user = request.user
+        try:
+            userAddress = UserAddress.objects.get(user=user)
+            data = {
+                "street" : userAddress.street,
+                "quarter" : userAddress.quarter,
+                "city" : userAddress.city,
+                "postal_code" : userAddress.postal_code,
+                "state" : userAddress.state
+            }
+            return Response(data, status=status.HTTP_200_OK)
+        except:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
