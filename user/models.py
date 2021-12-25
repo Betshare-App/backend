@@ -1,10 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.deletion import CASCADE
-from django.db.models.signals import post_save
-from rest_framework.authtoken.models import Token
-from django.conf import settings
-from django.dispatch import receiver
 
 # Create your models here.
 
@@ -13,9 +9,6 @@ class UserDocs(models.Model):
     RG = models.CharField(max_length=20, blank=True)
     date_of_birth = models.DateField(blank=True)
     CPF = models.CharField(max_length=20, blank=True)
-
-class UserContact(models.Model):
-    user = models.OneToOneField(User, on_delete=CASCADE)
     phone = models.CharField(max_length=20)
 
 class UserAddress(models.Model):
@@ -28,10 +21,9 @@ class UserAddress(models.Model):
 
 class UserFinanceInfo(models.Model):
     user = models.OneToOneField(User, on_delete=CASCADE)
-    bank = models.CharField(max_length=50)
-    agency =  models.CharField(max_length=50)
-    account = models.CharField(max_length=50)
-
-class UserBalance(models.Model):
-    user = models.OneToOneField(User, on_delete=CASCADE)
+    bank = models.CharField(max_length=50, null=True, blank=True)
+    agency =  models.CharField(max_length=50, null=True, blank=True)
+    account = models.CharField(max_length=50, null=True, blank=True)
     balance = models.FloatField(blank=True, null=True, default=0)
+    pix_key = models.CharField(max_length=255, null=True, blank=True)
+    

@@ -5,9 +5,9 @@ from rest_framework.decorators import parser_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from django.contrib.auth.models import User
-from .models import (UserBalance, 
-                    UserContact, 
-                    UserDocs, 
+
+from user.serializer import UserSerializer
+from .models import (UserDocs, 
                     UserAddress)
 
 # Create your views here.
@@ -26,7 +26,6 @@ class Register(APIView):
             user = User.objects.create_user(data['username'], data['email'], data['password'])
             user.save()
         return Response(data={"user":user.username},status=status.HTTP_201_CREATED)
-
 
 class CheckCreditals(APIView):
     permission_classes = [AllowAny,]
@@ -47,89 +46,8 @@ class CheckCreditals(APIView):
             email_isvalid = True
         return Response({'username_isvalid': username_isvalid, 'email_isvalid': email_isvalid})
 
-class GetBalance(APIView):
+class getUserData(APIView):
     def get(self, request):
-        try:
-            user = User.objects.get(id=request.user.id)
-            user_balance = UserBalance.objects.get(user=user)
-            balance = user_balance.balance
-            return Response(balance, status=status.HTTP_200_OK)
-        except:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
-class RegisterPersonalInfo(APIView):
-    def get(self, request):
-        try:
-            user = User.objects.get(id = request.user.id)
-            first_name = user.first_name
-            last_name = user.last_name
-            docs = UserDocs.objects.get(user = user)
-            rg = docs.RG
-            cpf = docs.CPF
-            date_of_birth = docs.date_of_birth
-            contact = UserContact.objects.get(user = user)
-            phone = contact.phone
-            form = {"first_name": first_name,
-                    "last_name": last_name,
-                    "rg": rg,
-                    "cpf": cpf,
-                    "date_of_birth": date_of_birth,
-                    "phone": phone}
-            return Response(form, status=status.HTTP_200_OK)
-        except:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-
-    def post(self, request):
-        data = request.data
-        try:
-            user = User.objects.get(id=request.user.id)
-            user.first_name = data['first_name']
-            user.last_name = data['last_name']
-            docs = UserDocs.objects.create(
-                user=user, 
-                RG=data['rg'], 
-                date_of_birth=data['date_of_birth'],
-                CPF=data['cpf'])
-            
-            contact = UserContact.objects.create(
-                user=user, 
-                phone=data['phone'])
-            user.save()
-            contact.save()
-            docs.save()
-            return Response(status=status.HTTP_200_OK)
-        except:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-
-class RegisterAddressInfo(APIView):
-    def post(self, request):
-        data = request.data
-        try:
-            user = User.objects.get(id = request.user.id)
-            user_address = UserAddress.objects.create(
-                user = user,
-                street =  data['street'],
-                quarter = data['quarter'],
-                postal_code = data['postal_code'],
-                city = data['city'],
-                state = data['state']   
-            )
-            user_address.save()
-            return Response(status=status.HTTP_200_OK)
-        except:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-
-    def get(self, request):
-        user = request.user
-        try:
-            userAddress = UserAddress.objects.get(user=user)
-            data = {
-                "street" : userAddress.street,
-                "quarter" : userAddress.quarter,
-                "city" : userAddress.city,
-                "postal_code" : userAddress.postal_code,
-                "state" : userAddress.state
-            }
-            return Response(data, status=status.HTTP_200_OK)
-        except:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+        user = User.objects.get(id=request.user.id)
+        serializer = UserSerializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
